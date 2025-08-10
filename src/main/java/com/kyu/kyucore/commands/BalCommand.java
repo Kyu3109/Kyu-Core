@@ -23,7 +23,7 @@ public abstract class BalCommand extends CommandBase {
 
         EntityPlayer player = (EntityPlayer) sender.getCommandSenderEntity();
         PlayerKoin playerKoin = new PlayerKoin(player);
-        int koins = playerKoin.getKoinsWithOtherCoins();
+        int koins = playerKoin.getKoins();
         String koinsString = String.valueOf(koins);
 
 
