@@ -3,8 +3,6 @@ package com.kyu.kyucore.data;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.BlockingQueue;
@@ -13,18 +11,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DataThread {
     private final BlockingQueue<Task> queue = new LinkedBlockingQueue<>();
-    private final Thread thread;
 
     public DataThread(){
-        thread = new Thread(() -> {
-            while(true){
-                try{
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
                     Task task = queue.take();
-                    if(task instanceof Read){
+                    if (task instanceof Read) {
                         NBTTagCompound nbt = readFile((Read) task);
                         ((Read) task).future.complete(nbt);
-                    }
-                    else if(task instanceof Write){
+                    } else if (task instanceof Write) {
                         writeFile((Write) task);
                     }
                 } catch (InterruptedException e) {
@@ -43,9 +39,7 @@ public class DataThread {
                 return null;
             }
 
-            NBTTagCompound nbtData = new NBTTagCompound();
-            nbtData = CompressedStreamTools.readCompressed(Files.newInputStream(read.file.toPath()));
-            return nbtData;
+            return CompressedStreamTools.readCompressed(Files.newInputStream(read.file.toPath()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -71,7 +65,7 @@ public class DataThread {
         queue.offer(write);
     }
 
-    private static interface Task{}
+    private interface Task{}
     private static class Read implements Task{
         public final File file;
         CompletableFuture<NBTTagCompound> future;

@@ -1,34 +1,33 @@
 package com.kyu.kyucore.data;
 
 import com.kyu.kyucore.KyuCore;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
 import java.io.File;
-import java.util.concurrent.CompletableFuture;
+import java.util.ArrayList;
+import java.util.List;
 
+@Mod.EventBusSubscriber(modid = KyuCore.MODID)
 public class DataManager {
-    public File dataHome = new File("kyu");
-    public final File dataFolder;
+    public static File dataHome;
+    public static List<Data> dataList = new ArrayList<>();
 
-    public DataManager(String modid){
-        this.dataFolder = new File(dataHome, modid);
+
+    public static Data newData(String modid){
+        Data data = new Data(modid);
+        dataList.add(data);
+        return data;
+    }
+
+    public static void serverStarting(){
+        dataHome = new File("./saves/"+ FMLCommonHandler.instance().getMinecraftServerInstance().getFolderName()+"/kyuData");
 
         if(!dataHome.exists()){
             dataHome.mkdirs();
         }
 
-        if(!this.dataFolder.exists()){
-            this.dataFolder.mkdirs();
+        for(Data data : dataList){
+            data.setup();
         }
-    }
-
-    public void writeFile(String fileName, NBTTagCompound nbt){
-        File file = new File(this.dataFolder, fileName+".dat");
-        KyuCore.dataThread.setWriteFile(file, nbt);
-    }
-
-    public CompletableFuture<NBTTagCompound> readFile(String fileName){
-        File file = new File(this.dataFolder, fileName+".dat");
-        return KyuCore.dataThread.setReadFile(file);
     }
 }
