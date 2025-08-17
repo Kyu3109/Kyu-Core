@@ -27,7 +27,7 @@ public class DataThread {
                     throw new RuntimeException(e);
                 }
             }
-        });
+        }, "DataThread");
 
         thread.setDaemon(true);
         thread.start();
@@ -36,6 +36,7 @@ public class DataThread {
     private NBTTagCompound readFile(Read read){
         try{
             if(!read.file.exists()){
+                System.out.println(read.file.getName());
                 return null;
             }
 

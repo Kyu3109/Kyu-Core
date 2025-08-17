@@ -1,6 +1,9 @@
 package com.kyu.kyucore.data;
 
 import com.kyu.kyucore.KyuCore;
+import com.kyu.kyucore.api.data.SetupedDataEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import java.io.File;
@@ -29,5 +32,7 @@ public class DataManager {
         for(Data data : dataList){
             data.setup();
         }
+
+        MinecraftForge.EVENT_BUS.post(new SetupedDataEvent());
     }
 }
