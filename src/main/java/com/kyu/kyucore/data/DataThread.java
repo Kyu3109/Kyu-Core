@@ -1,10 +1,9 @@
 package com.kyu.kyucore.data;
 
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import java.io.*;
+import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,8 +17,8 @@ public class DataThread {
                 try {
                     Task task = queue.take();
                     if (task instanceof Read) {
-                        NBTTagCompound nbt = readFile((Read) task);
-                        ((Read) task).future.complete(nbt);
+                        JsonObject data = readFile((Read) task);
+                        ((Read) task).future.complete(data);
                     } else if (task instanceof Write) {
                         writeFile((Write) task);
                     }
@@ -33,43 +32,45 @@ public class DataThread {
         thread.start();
     }
 
-    private NBTTagCompound readFile(Read read){
+    private JsonObject readFile(Read read){
         try{
             if(!read.file.exists()){
                 System.out.println(read.file.getName());
                 return null;
             }
 
-            return CompressedStreamTools.readCompressed(Files.newInputStream(read.file.toPath()));
+            String content = new Scanner(read.file).next();
+            JsonParser parser = new JsonParser();
+            return (JsonObject) parser.parse(content);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private void writeFile(Write write){
-        try{
-            CompressedStreamTools.writeCompressed(write.nbt, Files.newOutputStream(write.file.toPath()));
-            System.out.println("successfully write file: " + write.file.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(write.file))){
+                writer.write(write.data);
+                System.out.println("Successfully write file "+ write.file.getName());
+        }catch (Exception e){
+            System.out.println("Error write file: " + write.file.getName());
         }
     }
 
-    public CompletableFuture<NBTTagCompound> setReadFile(File file){
+    public CompletableFuture<JsonObject> setReadFile(File file){
         Read read = new Read(file);
         queue.offer(read);
         return read.future;
     }
 
-    public void setWriteFile(File file, NBTTagCompound nbt){
-        Write write = new Write(file, nbt);
+    public void setWriteFile(File file, String data){
+        Write write = new Write(file, data);
         queue.offer(write);
     }
 
     private interface Task{}
     private static class Read implements Task{
         public final File file;
-        CompletableFuture<NBTTagCompound> future;
+        CompletableFuture<JsonObject> future;
 
         public Read(File file){
             this.file = file;
@@ -79,11 +80,11 @@ public class DataThread {
 
     private static class Write implements Task{
         public final File file;
-        public final NBTTagCompound nbt;
+        public final String data;
 
-        public Write(File file, NBTTagCompound nbt){
+        public Write(File file, String data){
             this.file = file;
-            this.nbt = nbt;
+            this.data = data;
         }
     }
 }
