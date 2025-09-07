@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[48,)"
+#issueTrackerURL = ""
+license = "Insert License Here"
+
+[[mods]]
+modId = "kyucore"
+version = "${version}"
+displayName = "KyuCore"
+authors = "Me!"
+description = '''
+This is an example description! Tell everyone what your mod is about!
+'''
+#logoFile = ""
+
+[[dependencies.kyucore]]
+modId = "forge"
+mandatory = true
+versionRange = "[48,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.kyucore]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.kyucore]]
+modId = "architectury"
+mandatory = true
+versionRange = "[10.1.20,)"
+ordering = "AFTER"
+side = "BOTH"
