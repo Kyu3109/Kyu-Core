@@ -1,5 +1,7 @@
 package com.kyu.kyucore.data;
 
+import com.google.gson.JsonObject;
+import com.kyu.kyucore.KyuCore;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ public class DataManager {
     }
 
     public static void serverStarting(String worldName){
-        System.out.println(worldName);
         dataHome = new File(worldName+"/kyuData");
 
         if(!dataHome.exists()){
@@ -25,5 +26,13 @@ public class DataManager {
         for(Data data : dataList){
             data.setupData();
         }
+
+        testeCompress();
+    }
+
+    private static void testeCompress(){
+        JsonObject json = new JsonObject();
+        json.addProperty("bah", 10);
+        KyuCore.DATA.data.writeFile("compressedFile", json);
     }
 }

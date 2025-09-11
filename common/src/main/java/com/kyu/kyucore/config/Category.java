@@ -2,7 +2,6 @@ package com.kyu.kyucore.config;
 
 import com.google.gson.JsonObject;
 import com.kyu.kyucore.KyuCore;
-
 import java.io.File;
 
 public class Category{

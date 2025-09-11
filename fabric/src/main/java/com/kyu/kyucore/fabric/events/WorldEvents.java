@@ -13,14 +13,6 @@ public class WorldEvents{
         @Override
         public void onWorldLoad(MinecraftServer server, ServerWorld world) {
             DataManager.serverStarting(world.getServer().getSavePath(WorldSavePath.ROOT).toAbsolutePath().toString());
-
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("teste", 10);
-            KyuCore.DATA.writeFile("arquivo", jsonObject);
-
-            KyuCore.DATA.readFile("arquivo", (json -> {
-                System.out.println(json.toString());
-            }));
         }
     }
 }

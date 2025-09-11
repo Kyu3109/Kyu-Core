@@ -3,8 +3,6 @@ package com.kyu.kyucore.config;
 import com.google.gson.JsonObject;
 import com.kyu.kyucore.KyuCore;
 import com.kyu.kyucore.data.DataMain;
-import com.kyu.kyucore.data.DataThread;
-
 import java.io.File;
 
 public class Config {
@@ -40,7 +38,6 @@ public class Config {
             return defaultValue;
         }
 
-        save();
         return this.json.get(key).getAsString();
     }
 
@@ -51,7 +48,6 @@ public class Config {
             return defaultValue;
         }
 
-        save();
         return this.json.get(key).getAsInt();
     }
 
@@ -62,7 +58,6 @@ public class Config {
             return defaultValue;
         }
 
-        save();
         return this.json.get(key).getAsBoolean();
     }
 
